@@ -1,0 +1,347 @@
+'use client';
+
+import { useQuery } from 'react-query';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Header from '@/components/Header';
+import { bookingsAPI, reviewsAPI } from '@/lib/api';
+import { useAuthStore } from '@/lib/auth';
+import { StarIcon, CalendarIcon, MapPinIcon, ClockIcon, CurrencyDollarIcon, UserIcon } from '@heroicons/react/24/solid';
+import { EyeIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
+
+export default function GuideDashboard() {
+  const router = useRouter();
+  const { user, logout } = useAuthStore();
+  const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Redirect if not logged in or not a guide
+  useEffect(() => {
+    if (!user || user.role !== 'guide') {
+      setIsRedirecting(true);
+      router.push('/auth/login');
+    }
+  }, [user, router]);
+
+  // Call all hooks consistently
+  const { data: bookings, isLoading: bookingsLoading } = useQuery(
+    ['bookings', 'guide'],
+    () => bookingsAPI.getMyBookings('guide'),
+    {
+      enabled: !!user && user.role === 'guide',
+    }
+  );
+
+  const { data: reviews, isLoading: reviewsLoading } = useQuery(
+    ['reviews', 'guide'],
+    () => reviewsAPI.getByGuide(user?._id || ''),
+    {
+      enabled: !!user && user.role === 'guide',
+    }
+  );
+
+  const upcomingBookings = bookings?.filter(booking => 
+    new Date(booking.startDate) > new Date() && booking.status !== 'cancelled'
+  ) || [];
+
+  const pastBookings = bookings?.filter(booking => 
+    new Date(booking.startDate) <= new Date() || booking.status === 'cancelled'
+  ) || [];
+
+  const totalEarnings = pastBookings
+    .filter(booking => booking.status === 'completed' && booking.isPaid)
+    .reduce((sum, booking) => sum + booking.price, 0);
+
+  const pendingEarnings = upcomingBookings
+    .filter(booking => booking.status === 'confirmed')
+    .reduce((sum, booking) => sum + booking.price, 0);
+
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <StarIcon
+        key={i}
+        className={`w-4 h-4 ${
+          i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'
+        }`}
+      />
+    ));
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      case 'completed':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleUpdateStatus = async (bookingId: string, status: 'confirmed' | 'cancelled') => {
+    try {
+      await bookingsAPI.updateStatus(bookingId, status);
+      // Refetch bookings
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+    }
+  };
+
+  // Show loading or redirect state
+  if (isRedirecting || !user || user.role !== 'guide') {
+    return (
+      <div className="min-h-screen bg-secondary-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="mt-4 text-secondary-600">Redirecting...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (bookingsLoading) {
+    return (
+      <div className="min-h-screen bg-secondary-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-pulse">
+            <div className="bg-secondary-200 h-8 rounded mb-4"></div>
+            <div className="bg-secondary-200 h-64 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-secondary-50">
+      <Header />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Dashboard Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-secondary-900 mb-2">
+            Welcome back, {user.name}!
+          </h1>
+          <p className="text-secondary-600">
+            Manage your bookings, earnings, and reviews
+          </p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="card p-6">
+            <div className="flex items-center">
+              <CalendarIcon className="w-8 h-8 text-primary-600 mr-4" />
+              <div>
+                <p className="text-sm font-medium text-secondary-600">Upcoming Tours</p>
+                <p className="text-2xl font-bold text-secondary-900">{upcomingBookings.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-6">
+            <div className="flex items-center">
+              <UserIcon className="w-8 h-8 text-primary-600 mr-4" />
+              <div>
+                <p className="text-sm font-medium text-secondary-600">Completed Tours</p>
+                <p className="text-2xl font-bold text-secondary-900">{pastBookings.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-6">
+            <div className="flex items-center">
+              <CurrencyDollarIcon className="w-8 h-8 text-primary-600 mr-4" />
+              <div>
+                <p className="text-sm font-medium text-secondary-600">Total Earnings</p>
+                <p className="text-2xl font-bold text-secondary-900">${totalEarnings}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-6">
+            <div className="flex items-center">
+              <StarIcon className="w-8 h-8 text-primary-600 mr-4" />
+              <div>
+                <p className="text-sm font-medium text-secondary-600">Average Rating</p>
+                <p className="text-2xl font-bold text-secondary-900">
+                  {user.rating ? user.rating.toFixed(1) : 'N/A'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bookings Section */}
+        <div className="card p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-secondary-900">My Bookings</h2>
+            <button
+              onClick={() => router.push('/profile/edit')}
+              className="btn-outline"
+            >
+              Update Availability
+            </button>
+          </div>
+
+          {/* Tabs */}
+          <div className="border-b border-secondary-200 mb-6">
+            <nav className="-mb-px flex space-x-8">
+              <button
+                onClick={() => setActiveTab('upcoming')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'upcoming'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300'
+                }`}
+              >
+                Upcoming ({upcomingBookings.length})
+              </button>
+              <button
+                onClick={() => setActiveTab('past')}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'past'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-secondary-500 hover:text-secondary-700 hover:border-secondary-300'
+                }`}
+              >
+                Past ({pastBookings.length})
+              </button>
+            </nav>
+          </div>
+
+          {/* Bookings List */}
+          <div className="space-y-4">
+            {(activeTab === 'upcoming' ? upcomingBookings : pastBookings).map((booking) => (
+              <div key={booking._id} className="border border-secondary-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium text-secondary-900">
+                        Tour with {booking.tourist?.name || 'Tourist'}
+                      </h3>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
+                        {booking.status}
+                      </span>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-secondary-600">
+                      <div className="flex items-center">
+                        <MapPinIcon className="w-4 h-4 mr-2" />
+                        {booking.place}
+                      </div>
+                      <div className="flex items-center">
+                        <CalendarIcon className="w-4 h-4 mr-2" />
+                        {new Date(booking.startDate).toLocaleDateString()}
+                      </div>
+                      <div className="flex items-center">
+                        <ClockIcon className="w-4 h-4 mr-2" />
+                        {booking.durationHours} hours
+                      </div>
+                    </div>
+
+                    {booking.specialRequests && (
+                      <p className="text-sm text-secondary-600 mt-2">
+                        <strong>Special Requests:</strong> {booking.specialRequests}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex items-center space-x-2 ml-4">
+                    <span className="font-medium text-secondary-900">
+                      ${booking.price}
+                    </span>
+                    
+                    {activeTab === 'upcoming' && booking.status === 'pending' && (
+                      <div className="flex space-x-1">
+                        <button
+                          onClick={() => handleUpdateStatus(booking._id, 'confirmed')}
+                          className="p-1 text-green-600 hover:text-green-800"
+                          title="Accept"
+                        >
+                          <CheckIcon className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleUpdateStatus(booking._id, 'cancelled')}
+                          className="p-1 text-red-600 hover:text-red-800"
+                          title="Decline"
+                        >
+                          <XMarkIcon className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
+                    
+                    <button
+                      onClick={() => router.push(`/bookings/${booking._id}`)}
+                      className="p-2 text-secondary-400 hover:text-secondary-600"
+                    >
+                      <EyeIcon className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {(activeTab === 'upcoming' ? upcomingBookings : pastBookings).length === 0 && (
+              <div className="text-center py-8">
+                <p className="text-secondary-600">
+                  {activeTab === 'upcoming' 
+                    ? "You don't have any upcoming tours."
+                    : "You haven't completed any tours yet."
+                  }
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="card p-6">
+          <h2 className="text-xl font-bold text-secondary-900 mb-6">Reviews Received</h2>
+          
+          {reviewsLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto"></div>
+            </div>
+          ) : reviews && reviews.length > 0 ? (
+            <div className="space-y-4">
+              {reviews.map((review) => (
+                <div key={review._id} className="border border-secondary-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
+                      <div className="flex items-center mr-4">
+                        {renderStars(review.rating)}
+                      </div>
+                      <span className="font-medium text-secondary-900">
+                        Review from {review.tourist?.name || 'Anonymous'}
+                      </span>
+                    </div>
+                    <span className="text-sm text-secondary-500">
+                      {new Date(review.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  {review.comment && (
+                    <p className="text-secondary-600">{review.comment}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-secondary-600">You haven't received any reviews yet.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+} 
