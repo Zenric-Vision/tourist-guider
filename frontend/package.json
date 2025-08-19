@@ -34,7 +34,7 @@
     "@types/react-datepicker": "^4.19.4",
     "react-hot-toast": "^2.4.1",
     "react-image-crop": "^10.1.8",
-    "@stripe/stripe-js": "^2.2.0",
+    "razorpay": "^2.8.6",
     "next-auth": "^4.24.5",
     "next-intl": "^3.4.1"
   },

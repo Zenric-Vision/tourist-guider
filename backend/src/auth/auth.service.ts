@@ -86,4 +86,37 @@ export class AuthService {
     const user = await this.userModel.findById(userId).select('-password');
     return user;
   }
+
+  async findOrCreateGoogleUser(googleUser: any) {
+    const { email, firstName, lastName, picture } = googleUser;
+    
+    // Check if user already exists
+    let user = await this.userModel.findOne({ email });
+    
+    if (!user) {
+      // Create new user with Google info
+      user = new this.userModel({
+        email,
+        name: `${firstName} ${lastName}`,
+        profilePicture: picture,
+        isActive: true,
+        role: 'tourist', // Default role, can be changed later
+        googleId: googleUser.id, // Add this field to user schema if needed
+      });
+      
+      await user.save();
+    }
+
+    // Generate JWT token
+    const payload = { email: user.email, sub: user._id, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    // Remove password from response
+    const { password: _, ...userWithoutPassword } = user.toObject();
+
+    return {
+      user: userWithoutPassword,
+      token,
+    };
+  }
 } 

@@ -279,3 +279,16 @@ charts/*.tgz
 # Local development scripts
 scripts/local/
 
+# Setup and Documentation Files
+AWS_S3_SETUP.md
+SMTP_SETUP.md
+GOOGLE_OAUTH_SETUP.md
+RAZORPAY_SETUP.md
+DEPLOYMENT.md
+ENVIRONMENT_VARIABLES.md
+
+# Railway configuration
+railway.json
+nixpacks.toml
+Procfile
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Welcome to TourMate</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #10B981; color: white; padding: 20px; text-align: center; }
+        .content { padding: 20px; background: #f9f9f9; }
+        .button { display: inline-block; padding: 12px 24px; background: #10B981; color: white; text-decoration: none; border-radius: 5px; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to TourMate! 🎉</h1>
+        </div>
+        <div class="content">
+            <h2>Hello {{userName}},</h2>
+            <p>Welcome to TourMate - your gateway to amazing travel experiences with local guides!</p>
+            
+            <p>We're excited to have you on board. Here's what you can do with TourMate:</p>
+            <ul>
+                <li>Discover local guides in your destination</li>
+                <li>Book personalized tours and experiences</li>
+                <li>Read reviews from other travelers</li>
+                <li>Connect with authentic local experiences</li>
+            </ul>
+            
+            <p>Ready to start your adventure?</p>
+            <a href="{{frontendUrl}}" class="button">Explore Tours</a>
+            
+            <p>If you have any questions, feel free to reach out to our support team.</p>
+            
+            <p>Happy travels!<br>
+            The TourMate Team</p>
+        </div>
+        <div class="footer">
+            <p>© 2024 TourMate. All rights reserved.</p>
+            <p>This email was sent to you because you signed up for TourMate.</p>
+        </div>
+    </div>
+</body>
+</html>

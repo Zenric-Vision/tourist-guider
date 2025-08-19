@@ -9,6 +9,9 @@ import { BookingsModule } from './bookings/bookings.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PaymentsModule } from './payments/payments.module';
 import { AdminModule } from './admin/admin.module';
+import { UploadModule } from './upload/upload.module';
+import { EmailModule } from './email/email.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { AdminModule } from './admin/admin.module';
     ReviewsModule,
     PaymentsModule,
     AdminModule,
+    UploadModule,
+    EmailModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {} 
