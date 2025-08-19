@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   role: 'tourist' | 'guide' | 'admin';
+  isActive?: boolean;
   profilePicture?: string;
   phoneNumber?: string;
   bio?: string;
@@ -34,7 +35,8 @@ export interface Booking {
   numPeople: number;
   specialRequests?: string;
   price: number;
-  status: 'pending' | 'accepted' | 'rejected' | 'completed' | 'cancelled';
+  status: 'pending' | 'accepted' | 'confirmed' | 'rejected' | 'completed' | 'cancelled';
+  isPaid?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -59,8 +61,8 @@ export interface AuthResponse {
 export interface SearchFilters {
   location?: string;
   date?: string;
-  minPrice?: number;
-  maxPrice?: number;
+  minPrice?: string;
+  maxPrice?: string;
   languages?: string[];
   page?: number;
   limit?: number;

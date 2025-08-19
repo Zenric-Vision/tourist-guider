@@ -7,7 +7,7 @@ import Header from '@/components/Header';
 import { adminAPI } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth';
 import { UserIcon, CalendarIcon, StarIcon, CurrencyDollarIcon, ShieldExclamationIcon } from '@heroicons/react/24/solid';
-import { EyeIcon, BanIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, XMarkIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
                           title={user.isActive ? 'Suspend User' : 'Activate User'}
                         >
                           {user.isActive ? (
-                            <BanIcon className="w-5 h-5" />
+                            <XMarkIcon className="w-5 h-5" />
                           ) : (
                             <CheckIcon className="w-5 h-5" />
                           )}

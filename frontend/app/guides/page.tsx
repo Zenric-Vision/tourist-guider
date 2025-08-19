@@ -26,8 +26,8 @@ export default function GuidesPage() {
     () => guidesAPI.search({
       location,
       date,
-      minPrice,
-      maxPrice,
+      minPrice: minPrice?.toString(),
+      maxPrice: maxPrice?.toString(),
       languages,
       page: currentPage,
       limit: 12,
@@ -59,7 +59,7 @@ export default function GuidesPage() {
           <h1 className="text-3xl font-bold text-secondary-900 mb-4">
             Find Your Perfect Guide
           </h1>
-          <SearchBar onSearch={handleSearch} initialValues={{ location, date, minPrice, maxPrice, languages }} />
+          <SearchBar onSearch={handleSearch} initialValues={{ location, date, minPrice: minPrice?.toString(), maxPrice: maxPrice?.toString(), languages }} />
         </div>
 
         {/* Results */}
@@ -88,7 +88,7 @@ export default function GuidesPage() {
               <div className="mb-4">
                 <p className="text-secondary-600">
                   Found {data?.total} guides
-                  {data?.totalPages > 1 && ` (Page ${currentPage} of ${data?.totalPages})`}
+                  {data?.total && data.total > 12 && ` (Page ${currentPage})`}
                 </p>
               </div>
 
@@ -99,7 +99,7 @@ export default function GuidesPage() {
               </div>
 
               {/* Pagination */}
-              {data && data.totalPages > 1 && (
+              {data && data.total && data.total > 12 && (
                 <div className="flex justify-center items-center space-x-2">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
@@ -109,7 +109,7 @@ export default function GuidesPage() {
                     <ChevronLeftIcon className="w-5 h-5" />
                   </button>
                   
-                  {Array.from({ length: Math.min(5, data.totalPages) }, (_, i) => {
+                  {Array.from({ length: Math.min(5, Math.ceil((data.total || 0) / 12)) }, (_, i) => {
                     const page = i + 1;
                     return (
                       <button
@@ -128,7 +128,7 @@ export default function GuidesPage() {
                   
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === data.totalPages}
+                    disabled={currentPage === Math.ceil((data.total || 0) / 12)}
                     className="p-2 rounded-lg border border-secondary-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-secondary-50"
                   >
                     <ChevronRightIcon className="w-5 h-5" />
