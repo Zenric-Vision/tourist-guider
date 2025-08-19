@@ -9,8 +9,8 @@ import { BookingsModule } from './bookings/bookings.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { PaymentsModule } from './payments/payments.module';
 import { AdminModule } from './admin/admin.module';
-import { UploadModule } from './upload/upload.module';
-import { EmailModule } from './email/email.module';
+// import { UploadModule } from './upload/upload.module';
+// import { EmailModule } from './email/email.module';
 import { HealthController } from './health/health.controller';
 
 @Module({
@@ -33,8 +33,8 @@ import { HealthController } from './health/health.controller';
     ReviewsModule,
     PaymentsModule,
     AdminModule,
-    UploadModule,
-    EmailModule,
+    // UploadModule,
+    // EmailModule,
   ],
   controllers: [HealthController],
 })
