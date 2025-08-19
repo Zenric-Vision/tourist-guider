@@ -56,7 +56,7 @@ export class PaymentsService {
       const payment = await this.razorpay.payments.fetch(paymentId);
       return {
         id: payment.id,
-        amount: payment.amount / 100, // Convert from paise to rupees
+        amount: Number(payment.amount) / 100, // Convert from paise to rupees
         currency: payment.currency,
         status: payment.status,
         method: payment.method,
