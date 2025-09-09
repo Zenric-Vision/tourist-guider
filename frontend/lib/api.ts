@@ -13,6 +13,8 @@ import {
   User,
   Guider,
   GuideSearchFilters,
+  Booking,
+  Review,
 } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
@@ -209,6 +211,62 @@ export const adminAPI = {
 
   getUserById: async (userId: string): Promise<User> => {
     const response = await api.get(`/users/${userId}`);
+    return response.data;
+  },
+};
+
+// Bookings API
+export const bookingsAPI = {
+  getMyBookings: async (userType: 'tourist' | 'guide'): Promise<Booking[]> => {
+    const response = await api.get(`/bookings/my-bookings?userType=${userType}`);
+    return response.data;
+  },
+
+  createBooking: async (bookingData: Partial<Booking>): Promise<Booking> => {
+    const response = await api.post('/bookings', bookingData);
+    return response.data;
+  },
+
+  updateStatus: async (bookingId: string, status: string): Promise<Booking> => {
+    const response = await api.patch(`/bookings/${bookingId}/status`, { status });
+    return response.data;
+  },
+
+  getById: async (bookingId: string): Promise<Booking> => {
+    const response = await api.get(`/bookings/${bookingId}`);
+    return response.data;
+  },
+
+  cancelBooking: async (bookingId: string, reason?: string): Promise<Booking> => {
+    const response = await api.patch(`/bookings/${bookingId}/cancel`, { reason });
+    return response.data;
+  },
+};
+
+// Reviews API
+export const reviewsAPI = {
+  getByGuide: async (guideId: string): Promise<Review[]> => {
+    const response = await api.get(`/reviews/guide/${guideId}`);
+    return response.data;
+  },
+
+  getByTourist: async (touristId: string): Promise<Review[]> => {
+    const response = await api.get(`/reviews/tourist/${touristId}`);
+    return response.data;
+  },
+
+  createReview: async (reviewData: Partial<Review>): Promise<Review> => {
+    const response = await api.post('/reviews', reviewData);
+    return response.data;
+  },
+
+  updateReview: async (reviewId: string, reviewData: Partial<Review>): Promise<Review> => {
+    const response = await api.patch(`/reviews/${reviewId}`, reviewData);
+    return response.data;
+  },
+
+  deleteReview: async (reviewId: string): Promise<void> => {
+    const response = await api.delete(`/reviews/${reviewId}`);
     return response.data;
   },
 };

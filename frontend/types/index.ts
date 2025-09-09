@@ -1,6 +1,7 @@
 // Base interfaces
 export interface BaseUser {
   id: string;
+  _id?: string; // MongoDB ID (for compatibility)
   email?: string;
   mobile?: string;
   city?: string; // Made optional to match backend
@@ -10,6 +11,10 @@ export interface BaseUser {
   badges: string[];
   createdAt?: string; // Made optional as backend doesn't always return it
   updatedAt?: string; // Made optional as backend doesn't always return it
+  role?: 'admin' | 'guide' | 'tourist'; // User role for authorization
+  userType?: 'traveler' | 'guider' | 'admin'; // User type (legacy compatibility)
+  name?: string; // Display name (for compatibility)
+  rating?: number; // User rating (for guides)
 }
 
 // User interface (for travelers)
@@ -27,6 +32,15 @@ export interface Guider extends BaseUser {
   showcaseName: string;
   guiderType: 'Professional' | 'Agency';
   overview: string;
+  
+  // Additional properties for compatibility
+  name?: string; // Display name (for compatibility)
+  profilePicture?: string; // Profile picture URL
+  bio?: string; // Guide bio/description
+  locations?: string[]; // Locations where guide operates
+  languages?: string[]; // Languages spoken
+  experienceYears?: number; // Years of experience
+  phoneNumber?: string; // Phone number
   
   // Progress fields
   basicDetailsCompleted: boolean;
@@ -261,6 +275,45 @@ export interface AdminUserStats {
   totalGuiders: number;
   verifiedGuiders: number;
   pendingApprovals: number;
+}
+
+// Booking interface
+export interface Booking {
+  _id: string;
+  tourist?: {
+    _id: string;
+    name: string;
+  };
+  guide?: {
+    _id: string;
+    name: string;
+  };
+  place: string;
+  startDate: string;
+  durationHours: number;
+  specialRequests?: string;
+  price: number;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  isPaid?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Review interface
+export interface Review {
+  _id: string;
+  tourist?: {
+    _id: string;
+    name: string;
+  };
+  guide?: {
+    _id: string;
+    name: string;
+  };
+  rating: number;
+  comment?: string;
+  createdAt: string;
+  updatedAt?: string;
 }
 
 // Legacy interface for backward compatibility (can be removed later)
