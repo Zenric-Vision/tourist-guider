@@ -40,32 +40,32 @@ body {
 
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   
   .btn-secondary {
-    @apply bg-secondary-200 hover:bg-secondary-300 text-secondary-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   
   .btn-outline {
-    @apply border border-primary-600 text-primary-600 hover:bg-primary-50 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply border border-orange-600 text-orange-600 hover:bg-orange-50 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
   }
   
   .input-field {
-    @apply w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500;
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-md border border-secondary-200;
+    @apply bg-white rounded-lg shadow-md border border-gray-200;
   }
 
   /* Fix for timeslot styling */
   .timeslot {
-    @apply bg-white border border-secondary-300 text-gray-900 hover:bg-secondary-50;
+    @apply bg-white border border-gray-300 text-gray-900 hover:bg-gray-50;
   }
 
   .timeslot.selected {
-    @apply bg-primary-600 text-white border-primary-600;
+    @apply bg-orange-600 text-white border-orange-600;
   }
 
   .timeslot.disabled {
@@ -74,7 +74,7 @@ body {
 
   /* Availability slot styling */
   .availability-slot {
-    @apply block w-full text-left px-2 py-1 rounded hover:bg-secondary-100 text-sm text-gray-900 bg-white;
+    @apply block w-full text-left px-2 py-1 rounded hover:bg-gray-100 text-sm text-gray-900 bg-white;
   }
 
   /* Modal styling */
@@ -115,5 +115,45 @@ body {
 
   input[type="text"] {
     @apply text-gray-900 bg-white;
+  }
+
+  /* Travel-specific styling */
+  .travel-card {
+    @apply bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300;
+  }
+
+  .travel-badge {
+    @apply px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .travel-badge-orange {
+    @apply bg-orange-100 text-orange-700;
+  }
+
+  .travel-badge-blue {
+    @apply bg-blue-100 text-blue-700;
+  }
+
+  .travel-badge-green {
+    @apply bg-green-100 text-green-700;
+  }
+
+  .travel-badge-purple {
+    @apply bg-purple-100 text-purple-700;
+  }
+
+  /* Line clamp utility */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 } 

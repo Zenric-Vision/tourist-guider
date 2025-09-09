@@ -1,57 +1,114 @@
-import { Controller, Post, Body, UseGuards, Request, Get, Res } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { Response } from 'express';
+import { TravelerSignupDto } from '../users/dto/traveler.dto';
+import { GuiderSignupDto } from '../guides/dto/guider.dto';
+import { TravelerLoginDto } from '../users/dto/traveler.dto';
+import { GuiderLoginDto } from '../guides/dto/guider.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { 
+  ApiAuthResponse, 
+  ApiOtpResponse, 
+  ApiSuccessResponse,
+  ApiBadRequestResponse,
+  ApiUnauthorizedResponse,
+  ApiConflictResponse
+} from '../common/decorators/api-response.decorator';
 
 @ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+  ) {}
 
-  @Post('register')
-  @ApiOperation({ summary: 'Register a new user' })
-  @ApiResponse({ status: 201, description: 'User registered successfully' })
-  @ApiResponse({ status: 409, description: 'User already exists' })
-  async register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+
+  // Traveler Authentication - Streamlined 2-API approach
+  @Post('traveler/register')
+  @ApiOperation({ summary: 'Register new traveler and send OTP' })
+  @ApiAuthResponse('Traveler registered successfully, OTP sent', undefined, true)
+  @ApiBadRequestResponse('Bad request')
+  @ApiConflictResponse('User already exists')
+  async registerTraveler(@Body() signupDto: TravelerSignupDto) {
+    return this.authService.registerTraveler(signupDto);
   }
 
-  @Post('login')
-  @ApiOperation({ summary: 'Login user' })
-  @ApiResponse({ status: 200, description: 'Login successful' })
-  @ApiResponse({ status: 401, description: 'Invalid credentials' })
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  @Post('traveler/verify-otp')
+  @ApiOperation({ summary: 'Verify OTP and complete registration' })
+  @ApiAuthResponse('OTP verified, registration completed')
+  @ApiUnauthorizedResponse('Invalid OTP')
+  async verifyOtpAndCompleteRegistration(@Body() body: { email: string; otp: string }) {
+    return this.authService.verifyOtpAndCompleteRegistration(body.email, body.otp, 'traveler');
   }
 
-  @Get('me')
+  @Post('traveler/resend-otp')
+  @ApiOperation({ summary: 'Resend OTP for unverified traveler' })
+  @ApiOtpResponse('OTP resent successfully')
+  @ApiBadRequestResponse('Bad request')
+  async resendOtpForTraveler(@Body() body: { email: string; userName?: string; actionType?: 'registration' | 'login' }) {
+    return this.authService.resendOtp(body.email, 'traveler', body.userName, body.actionType || 'registration');
+  }
+
+  @Post('traveler/login')
+  @ApiOperation({ summary: 'Login traveler' })
+  @ApiAuthResponse('Login successful')
+  @ApiUnauthorizedResponse('Invalid credentials or account not verified')
+  async loginTraveler(@Body() loginDto: TravelerLoginDto) {
+    return this.authService.loginTraveler(loginDto);
+  }
+
+  // Guider Authentication - Streamlined 2-API approach
+  @Post('guider/register')
+  @ApiOperation({ summary: 'Register new guider and send OTP' })
+  @ApiAuthResponse('Guider registered successfully, OTP sent', undefined, true)
+  @ApiBadRequestResponse('Bad request')
+  @ApiConflictResponse('User already exists')
+  async registerGuider(@Body() signupDto: GuiderSignupDto) {
+    return this.authService.registerGuider(signupDto);
+  }
+
+  @Post('guider/verify-otp')
+  @ApiOperation({ summary: 'Verify OTP and complete guider registration' })
+  @ApiAuthResponse('OTP verified, registration completed')
+  @ApiUnauthorizedResponse('Invalid OTP')
+  async verifyOtpAndCompleteGuiderRegistration(@Body() body: { email: string; otp: string }) {
+    return this.authService.verifyOtpAndCompleteRegistration(body.email, body.otp, 'guider');
+  }
+
+  @Post('guider/resend-otp')
+  @ApiOperation({ summary: 'Resend OTP for unverified guider' })
+  @ApiOtpResponse('OTP resent successfully')
+  @ApiBadRequestResponse('Bad request')
+  async resendOtpForGuider(@Body() body: { email: string; userName?: string; actionType?: 'registration' | 'login' }) {
+    return this.authService.resendOtp(body.email, 'guider', body.userName, body.actionType || 'registration');
+  }
+
+  @Post('guider/login')
+  @ApiOperation({ summary: 'Login guider' })
+  @ApiAuthResponse('Login successful')
+  @ApiUnauthorizedResponse('Invalid credentials or account not verified')
+  async loginGuider(@Body() loginDto: GuiderLoginDto) {
+    return this.authService.loginGuider(loginDto);
+  }
+
+  // Password Management
+  @Post('change-password')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, description: 'User profile retrieved' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getProfile(@Request() req) {
-    return req.user;
-  }
-
-  @Get('google')
-  @UseGuards(GoogleAuthGuard)
-  @ApiOperation({ summary: 'Initiate Google OAuth' })
-  async googleAuth() {
-    // Guard will handle the OAuth flow
-  }
-
-  @Get('google/callback')
-  @UseGuards(GoogleAuthGuard)
-  @ApiOperation({ summary: 'Google OAuth callback' })
-  async googleAuthCallback(@Request() req, @Res() res: Response) {
-    const { user, token } = req.user;
-    
-    // Redirect to frontend with token
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-    res.redirect(`${frontendUrl}/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}`);
+  @ApiOperation({ summary: 'Change password' })
+  @ApiSuccessResponse('Password changed successfully')
+  @ApiBadRequestResponse('Bad request')
+  @ApiUnauthorizedResponse('Unauthorized')
+  async changePassword(
+    @Request() req,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ) {
+    return this.authService.changePassword(
+      req.user.sub,
+      req.user.userType,
+      changePasswordDto.oldPassword,
+      changePasswordDto.newPassword,
+    );
   }
 } 

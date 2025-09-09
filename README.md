@@ -1,342 +1,300 @@
-# TourMate - Tourist Guide Booking Platform
+# Tourist Guider - India's Premier Local Guide Platform
 
-A full-stack web application that connects tourists with local guides for authentic travel experiences. Built with Next.js, NestJS, MongoDB, and TypeScript.
+A comprehensive tour guide marketplace platform specifically designed for India, connecting travelers with verified local guides for authentic experiences across the country.
 
-## 🚀 Features
+## 🌟 Features
 
-### For Tourists
-- **Search & Filter**: Find guides by location, date, language, price, and rating
-- **Guide Profiles**: View detailed profiles with reviews, availability, and pricing
-- **Booking System**: Easy booking process with payment integration
-- **Review System**: Rate and review guides after tours
-- **Dashboard**: Manage bookings, view history, and track upcoming tours
+### For Travelers
+- **Advanced Search & Filtering**: Find guides by location, tour type, specializations, languages, and more
+- **India-Specific Content**: Curated experiences across Indian states and cities
+- **Verified Guides**: All guides are background-checked and rated
+- **Multiple Tour Types**: Cultural, Adventure, Food, Historical, Spiritual, Wildlife, and more
+- **Local Expertise**: Guides with deep knowledge of Indian culture, traditions, and hidden gems
+- **Secure Booking**: Integrated payment system with Razorpay
+- **Reviews & Ratings**: Authentic feedback from previous travelers
+- **Multi-language Support**: Guides fluent in English, Hindi, and local languages
 
 ### For Guides
-- **Profile Management**: Create detailed profiles with bio, languages, and pricing
-- **Availability Calendar**: Set and manage availability slots
-- **Booking Management**: Accept/reject booking requests
-- **Earnings Dashboard**: Track earnings and completed tours
-- **Review Management**: View and respond to tourist reviews
+- **Comprehensive Profiles**: Detailed profiles with specializations, certifications, and gallery
+- **India-Specific Fields**: GST numbers, Indian languages, cuisines, and festivals
+- **Tour Management**: Easy availability management and booking handling
+- **Earnings Dashboard**: Track bookings, reviews, and earnings
+- **Verification System**: Get verified to build trust with travelers
 
 ### For Admins
-- **User Management**: View all users and manage accounts
-- **Content Moderation**: Moderate reviews and reported content
-- **Analytics**: View platform statistics and insights
+- **User Management**: Manage guides, tourists, and platform content
+- **Verification System**: Review and approve guide applications
+- **Analytics Dashboard**: Track platform performance and user engagement
+- **Content Moderation**: Monitor reviews and ensure quality
 
-## 🛠 Tech Stack
-
-### Frontend
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework
-- **React Query** - Data fetching and caching
-- **Zustand** - State management
-- **React Hook Form** - Form handling with validation
-- **Stripe** - Payment processing
+## 🏗️ Tech Stack
 
 ### Backend
-- **NestJS** - Progressive Node.js framework
-- **TypeScript** - Type-safe development
-- **MongoDB** - NoSQL database with Mongoose ODM
-- **JWT** - Authentication and authorization
-- **Passport** - Authentication strategies
-- **Stripe** - Payment processing
-- **Swagger** - API documentation
+- **Framework**: NestJS with TypeScript
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT with Google OAuth
+- **File Upload**: Multer for image handling
+- **Email**: Nodemailer with Handlebars templates
+- **Payment**: Razorpay integration
+- **Validation**: Class-validator and class-transformer
+
+### Frontend
+- **Framework**: Next.js 14 with TypeScript
+- **Styling**: Tailwind CSS with custom components
+- **State Management**: React Query for server state
+- **Authentication**: NextAuth.js
+- **UI Components**: Heroicons and custom components
+- **Payment**: Razorpay checkout
 
 ### Infrastructure
-- **Docker** - Containerization
-- **MongoDB Atlas** - Cloud database (production)
-- **Vercel** - Frontend deployment
-- **Railway/Render** - Backend deployment
-
-## 📋 Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
-- MongoDB (local or Atlas)
-- Docker (optional)
+- **Containerization**: Docker and Docker Compose
+- **Environment**: Node.js 18+
+- **Database**: MongoDB Atlas (production) / Local MongoDB (development)
 
 ## 🚀 Quick Start
 
-### Option 1: Using Docker (Recommended)
+### Prerequisites
+- Node.js 18+ 
+- MongoDB (local or Atlas)
+- Docker (optional)
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd tourist-guider
-   ```
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd tourist-guider
+```
 
-2. **Start with Docker Compose**
-   ```bash
-   docker-compose up -d
-   ```
+### 2. Environment Setup
+```bash
+# Copy environment files
+cp env.example .env
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
 
-3. **Seed the database**
-   ```bash
-   docker exec tourmate-backend npm run seed
-   ```
+### 3. Install Dependencies
+```bash
+# Install root dependencies
+npm install
 
-4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:4000
-   - API Docs: http://localhost:4000/api/docs
+# Install backend dependencies
+cd backend
+npm install
 
-### Option 2: Local Development
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
 
-1. **Clone and install dependencies**
-   ```bash
-   git clone <repository-url>
-   cd tourist-guider
-   npm run install:all
-   ```
+### 4. Database Setup
+```bash
+# Start MongoDB (if using local)
+docker-compose up -d mongodb
 
-2. **Set up environment variables**
-   ```bash
-   cp env.example .env
-   # Edit .env with your configuration
-   ```
+# Or use MongoDB Atlas (update connection string in .env)
+```
 
-3. **Start MongoDB**
-   ```bash
-   # Using Docker
-   docker run -d -p 27017:27017 --name mongodb mongo:6.0
-   
-   # Or install MongoDB locally
-   ```
+### 5. Seed Database
+```bash
+cd backend
+npm run seed:advanced
+```
 
-4. **Seed the database**
-   ```bash
-   cd backend
-   npm run seed
-   ```
+### 6. Start Development Servers
+```bash
+# Start backend (from backend directory)
+npm run start:dev
 
-5. **Start the applications**
-   ```bash
-   # Terminal 1 - Backend
-   cd backend
-   npm run start:dev
-   
-   # Terminal 2 - Frontend
-   cd frontend
-   npm run dev
-   ```
+# Start frontend (from frontend directory)
+npm run dev
+```
+
+### 7. Access the Application
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:4000
+- **API Documentation**: http://localhost:4000/api
+
+## 📊 Sample Data
+
+The seed script creates:
+
+### Guides (6 Professional Profiles)
+1. **Rajesh Kumar** - Mumbai Cultural & Food Guide
+2. **Priya Sharma** - Rishikesh Spiritual & Yoga Guide  
+3. **Amit Patel** - Wildlife Safari Expert
+4. **Lakshmi Devi** - South Indian Cooking Expert
+5. **Arjun Singh** - Rajasthan Heritage Expert
+6. **Meera Iyer** - Kerala Backwaters Specialist
+
+### Tourists (3 Sample Accounts)
+- John Smith, Sarah Johnson, Michael Brown
+
+### Admin
+- Admin User for platform management
+
+## 🔐 Authentication
+
+### Login Credentials
+```
+Guide: rajesh.kumar@example.com / password123
+Tourist: john.smith@example.com / password123  
+Admin: admin@touristguider.com / admin123
+```
+
+## 🗺️ India-Specific Features
+
+### States & Cities
+- **15 Major States**: Maharashtra, Delhi, Karnataka, Tamil Nadu, etc.
+- **50+ Cities**: Mumbai, Delhi, Bangalore, Chennai, Jaipur, Varanasi, etc.
+- **Regional Specializations**: Each guide specializes in specific regions
+
+### Tour Types
+- **Cultural Tours**: Temples, palaces, traditional arts
+- **Adventure Tours**: Trekking, wildlife safaris, outdoor activities
+- **Food Tours**: Street food, traditional cuisine, cooking classes
+- **Historical Tours**: Ancient monuments, heritage sites
+- **Spiritual Tours**: Yoga, meditation, sacred sites
+- **Nature Tours**: Backwaters, mountains, beaches
+- **Architecture Tours**: Modern and historical buildings
+- **Wildlife Tours**: National parks and sanctuaries
+
+### Specializations
+- Ancient Temples, Street Food, Yoga, Ayurveda
+- Wildlife Photography, Heritage Sites, Local Markets
+- Palace Tours, Cooking Classes, Village Tours
+
+### Languages & Culture
+- **15+ Indian Languages**: Hindi, English, regional languages
+- **Indian Cuisines**: North Indian, South Indian, regional specialties
+- **Festivals**: Diwali, Holi, Pongal, Onam, and more
+
+## 🏛️ Architecture
+
+### Backend Structure
+```
+backend/
+├── src/
+│   ├── auth/           # Authentication & authorization
+│   ├── users/          # User management
+│   ├── guides/         # Guide-specific features
+│   ├── bookings/       # Booking management
+│   ├── reviews/        # Review system
+│   ├── payments/       # Payment processing
+│   ├── upload/         # File upload handling
+│   └── admin/          # Admin panel
+```
+
+### Frontend Structure
+```
+frontend/
+├── app/                # Next.js app router
+│   ├── auth/          # Authentication pages
+│   ├── guides/        # Guide listing & profiles
+│   ├── dashboard/     # User dashboards
+│   └── admin/         # Admin panel
+├── components/         # Reusable components
+├── lib/               # API clients & utilities
+└── types/             # TypeScript definitions
+```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 
-Create a `.env` file in the root directory:
-
+#### Backend (.env)
 ```env
-# App Configuration
-PORT=4000
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
-
-# MongoDB Configuration
-MONGO_URI=mongodb://localhost:27017/tourmate
-
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-JWT_EXPIRY=7d
-
-# Stripe Configuration
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
-STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
-
-# Cloudinary Configuration (for image uploads)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Email Configuration (SendGrid)
-SENDGRID_API_KEY=your_sendgrid_api_key
-SENDGRID_FROM_EMAIL=noreply@tourmate.com
+MONGO_URI=mongodb://localhost:27017/tourist-guider
+JWT_SECRET=your-jwt-secret
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+RAZORPAY_KEY_ID=your-razorpay-key
+RAZORPAY_KEY_SECRET=your-razorpay-secret
+SMTP_HOST=your-smtp-host
+SMTP_USER=your-smtp-user
+SMTP_PASS=your-smtp-password
 ```
 
-## 📚 API Documentation
-
-Once the backend is running, visit http://localhost:4000/api/docs for interactive API documentation.
-
-### Key Endpoints
-
-#### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user profile
-
-#### Guides
-- `GET /api/guides` - Search guides with filters
-- `GET /api/guides/:id` - Get guide profile
-- `PATCH /api/guides/availability` - Update guide availability
-
-#### Bookings
-- `POST /api/bookings` - Create new booking
-- `GET /api/bookings/my` - Get user bookings
-- `GET /api/bookings/:id` - Get booking details
-- `PATCH /api/bookings/:id/status` - Update booking status
-
-#### Reviews
-- `POST /api/reviews` - Create review
-- `GET /api/reviews/guide/:id` - Get guide reviews
-
-#### Payments
-- `POST /api/payments/create-intent` - Create payment intent
-
-## 🧪 Testing
-
-### Backend Tests
-```bash
-cd backend
-npm run test
-npm run test:e2e
+#### Frontend (.env.local)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4000/api
+NEXTAUTH_SECRET=your-nextauth-secret
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+NEXT_PUBLIC_RAZORPAY_KEY_ID=your-razorpay-key
 ```
-
-### Frontend Tests
-```bash
-cd frontend
-npm run test
-```
-
-## 📦 Available Scripts
-
-### Root Level
-- `npm run dev` - Start both frontend and backend in development
-- `npm run build` - Build both applications
-- `npm run test` - Run tests for both applications
-- `npm run seed` - Seed the database with sample data
-
-### Backend
-- `npm run start:dev` - Start in development mode
-- `npm run build` - Build the application
-- `npm run start:prod` - Start in production mode
-- `npm run test` - Run unit tests
-- `npm run test:e2e` - Run end-to-end tests
-
-### Frontend
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-
-## 🗄 Database Schema
-
-### User
-```typescript
-{
-  _id: ObjectId,
-  name: string,
-  email: string,
-  password: string (hashed),
-  role: "tourist" | "guide" | "admin",
-  profilePicture?: string,
-  phoneNumber?: string,
-  bio?: string,
-  languages?: string[],
-  experienceYears?: number,
-  locations?: string[],
-  pricePerHour?: number,
-  pricePerDay?: number,
-  rating?: number,
-  availability?: { date: string, slots: string[] }[],
-  isActive: boolean,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### Booking
-```typescript
-{
-  _id: ObjectId,
-  touristId: ObjectId,
-  guideId: ObjectId,
-  place: string,
-  startDate: Date,
-  durationHours: number,
-  numPeople: number,
-  specialRequests?: string,
-  price: number,
-  status: "pending" | "accepted" | "rejected" | "completed" | "cancelled",
-  paymentIntentId?: string,
-  isPaid: boolean,
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### Review
-```typescript
-{
-  _id: ObjectId,
-  bookingId: ObjectId,
-  touristId: ObjectId,
-  guideId: ObjectId,
-  rating: number (1-5),
-  comment?: string,
-  createdAt: Date
-}
-```
-
-## 🔐 Authentication
-
-The application uses JWT-based authentication with the following flow:
-
-1. User registers/logs in
-2. Server validates credentials and returns JWT token
-3. Client stores token in localStorage
-4. Token is sent with each API request in Authorization header
-5. Server validates token and extracts user information
-
-## 💳 Payment Integration
-
-Stripe is integrated for payment processing:
-
-1. Client creates payment intent via API
-2. Stripe returns client secret
-3. Client confirms payment using Stripe Elements
-4. Webhook updates booking status on successful payment
 
 ## 🚀 Deployment
 
-### Frontend (Vercel)
-1. Connect GitHub repository to Vercel
-2. Set environment variables
-3. Deploy automatically on push to main branch
+### Using Docker
+```bash
+# Build and start all services
+docker-compose up -d
 
-### Backend (Railway/Render)
-1. Connect GitHub repository
-2. Set environment variables
-3. Deploy automatically on push to main branch
+# View logs
+docker-compose logs -f
 
-### Database (MongoDB Atlas)
-1. Create cluster in MongoDB Atlas
-2. Get connection string
-3. Update environment variables
+# Stop services
+docker-compose down
+```
+
+### Manual Deployment
+```bash
+# Backend
+cd backend
+npm run build
+npm run start:prod
+
+# Frontend
+cd frontend
+npm run build
+npm start
+```
+
+## 📱 API Endpoints
+
+### Guides
+- `GET /api/guides` - Search guides with filters
+- `GET /api/guides/featured` - Get featured guides
+- `GET /api/guides/destinations/popular` - Popular destinations
+- `GET /api/guides/tour-types` - Available tour types
+- `GET /api/guides/specializations` - Available specializations
+- `GET /api/guides/:id` - Get guide profile
+- `GET /api/guides/:id/similar` - Similar guides
+
+### Bookings
+- `POST /api/bookings` - Create booking
+- `GET /api/bookings/my` - User's bookings
+- `PATCH /api/bookings/:id/status` - Update booking status
+
+### Reviews
+- `POST /api/reviews` - Create review
+- `GET /api/reviews/guide/:id` - Guide's reviews
+
+### Payments
+- `POST /api/payments/create-intent` - Create payment intent
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-For support, email support@tourmate.com or create an issue in the repository.
+For support, email support@touristguider.com or create an issue in the repository.
 
-## 🔄 Roadmap
+## 🙏 Acknowledgments
 
-- [ ] Real-time chat between tourists and guides
-- [ ] Mobile app (React Native)
-- [ ] Multi-language support
-- [ ] Advanced analytics dashboard
-- [ ] Guide verification system
-- [ ] Insurance integration
-- [ ] Group booking features
-- [ ] Virtual tour previews 
+- Inspired by ToursByLocals platform
+- Built for the Indian tourism market
+- Special thanks to all the local guides who inspired this platform
+
+---
+
+**Tourist Guider** - Connecting travelers with authentic Indian experiences through local expertise. 

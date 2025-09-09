@@ -110,7 +110,7 @@ test-results.xml
 *.crt
 
 # MongoDB data
-data/
+# data/
 
 # Redis dump
 dump.rdb

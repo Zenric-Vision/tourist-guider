@@ -5,59 +5,55 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ required: true })
-  name: string;
+  @Prop({ required: true, maxlength: 50 })
+  firstName: string;
 
-  @Prop({ required: true, unique: true })
+  @Prop({ required: true, maxlength: 50 })
+  lastName: string;
+
+  @Prop({ unique: true, sparse: true, required: true })
   email: string;
 
+  @Prop({ unique: true, sparse: true })
+  mobile?: string;
+
+  @Prop({ required: false })
+  city?: string;
+
   @Prop({ required: true })
-  password: string;
+  passwordHash: string;
 
-  @Prop({ required: true, enum: ['tourist', 'guide', 'admin'], default: 'tourist' })
-  role: string;
+  @Prop({ default: false })
+  isVerified: boolean; // after OTP
 
+  // Profile fields
   @Prop()
-  profilePicture?: string;
+  profilePictureUrl?: string;
 
-  @Prop()
-  phoneNumber?: string;
-
-  @Prop()
-  bio?: string;
+  @Prop({ enum: ['Adventure', 'Cultural', 'Relaxation', 'Wildlife'] })
+  travelStyle?: string;
 
   @Prop([String])
-  languages?: string[];
+  preferredCategories?: string[];
 
-  @Prop()
-  experienceYears?: number;
+  @Prop({ type: String })
+  travelPreferences?: string;
 
   @Prop([String])
-  locations?: string[];
-
-  @Prop()
-  pricePerHour?: number;
-
-  @Prop()
-  pricePerDay?: number;
+  badges?: string[];
 
   @Prop({ default: 0 })
-  rating?: number;
-
-  @Prop([{ date: String, slots: [String] }])
-  availability?: Array<{ date: string; slots: string[] }>;
+  tourPoints?: number;
 
   @Prop({ default: true })
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
 // Indexes for better query performance
 UserSchema.index({ email: 1 });
-UserSchema.index({ role: 1 });
-UserSchema.index({ locations: 1 });
-UserSchema.index({ languages: 1 });
-UserSchema.index({ rating: -1 });
-UserSchema.index({ pricePerHour: 1 });
-UserSchema.index({ 'availability.date': 1 }); 
+UserSchema.index({ mobile: 1 });
+UserSchema.index({ city: 1 });
+UserSchema.index({ isVerified: 1 });
+UserSchema.index({ isActive: 1 }); 

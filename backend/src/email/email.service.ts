@@ -113,6 +113,30 @@ export class EmailService {
     });
   }
 
+  async sendOtpVerification(
+    userEmail: string,
+    userName: string,
+    otp: string,
+    actionType: 'registration' | 'login' = 'registration',
+  ): Promise<void> {
+    const action = actionType === 'registration' ? 'registering with TourMate' : 'logging into your TourMate account';
+    
+    const html = await this.loadTemplate('otp-verification', {
+      userName,
+      otp,
+      action,
+      actionType,
+      frontendUrl: this.configService.get<string>('FRONTEND_URL'),
+    });
+
+    await this.transporter.sendMail({
+      from: this.configService.get<string>('SMTP_FROM_EMAIL'),
+      to: userEmail,
+      subject: `OTP Verification - TourMate ${actionType === 'registration' ? 'Registration' : 'Login'}`,
+      html,
+    });
+  }
+
   async sendCustomEmail(
     to: string,
     subject: string,

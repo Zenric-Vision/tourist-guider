@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { GuidesModule } from './guides/guides.module';
@@ -26,6 +27,7 @@ import { HealthController } from './health/health.controller';
         limit: 100,
       },
     ]),
+    CommonModule,
     AuthModule,
     UsersModule,
     GuidesModule,

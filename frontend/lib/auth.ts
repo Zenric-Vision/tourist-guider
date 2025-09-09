@@ -1,14 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { User } from '@/types';
+import { User, Guider } from '@/types';
+
+type AuthUser = User | Guider;
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (user: User, token: string) => void;
+  login: (user: AuthUser, token: string) => void;
   logout: () => void;
-  updateUser: (user: User) => void;
+  updateUser: (user: AuthUser) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -17,7 +19,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
-      login: (user: User, token: string) => {
+      login: (user: AuthUser, token: string) => {
         set({ user, token, isAuthenticated: true });
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
@@ -27,7 +29,7 @@ export const useAuthStore = create<AuthState>()(
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       },
-      updateUser: (user: User) => {
+      updateUser: (user: AuthUser) => {
         set({ user });
         localStorage.setItem('user', JSON.stringify(user));
       },

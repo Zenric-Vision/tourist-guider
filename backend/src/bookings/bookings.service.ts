@@ -3,25 +3,37 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Booking, BookingDocument } from './schemas/booking.schema';
 import { User, UserDocument } from '../users/schemas/user.schema';
+import { Guider, GuiderDocument } from '../guides/schemas/guider.schema';
 
 @Injectable()
 export class BookingsService {
   constructor(
     @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Guider.name) private guiderModel: Model<GuiderDocument>,
   ) {}
 
   async createBooking(bookingData: any, touristId: string) {
     const { guideId, place, startDate, durationHours, numPeople, specialRequests } = bookingData;
 
     // Get guide to calculate price
-    const guide = await this.userModel.findById(guideId);
-    if (!guide || guide.role !== 'guide') {
+    const guide = await this.guiderModel.findById(guideId);
+    if (!guide) {
       throw new NotFoundException('Guide not found');
     }
 
-    // Calculate price
-    const price = guide.pricePerHour * durationHours;
+    // Calculate price based on guide's pricing
+    let price = 0;
+    if (guide.pricePerHour) {
+      price = guide.pricePerHour * durationHours;
+    } else if (guide.pricePerDay) {
+      price = guide.pricePerDay * Math.ceil(durationHours / 8);
+    } else if (guide.pricePerTour) {
+      price = guide.pricePerTour;
+    } else {
+      // Default pricing if no pricing set
+      price = 1000 * durationHours; // ₹1000 per hour default
+    }
 
     const booking = new this.bookingModel({
       touristId,
@@ -40,8 +52,8 @@ export class BookingsService {
   async getBookingById(id: string, userId: string) {
     const booking = await this.bookingModel
       .findById(id)
-      .populate('touristId', '-password')
-      .populate('guideId', '-password');
+      .populate('touristId', '-passwordHash')
+      .populate('guideId', '-passwordHash');
 
     if (!booking) {
       throw new NotFoundException('Booking not found');
@@ -55,22 +67,22 @@ export class BookingsService {
     return booking;
   }
 
-  async getMyBookings(userId: string, role?: string) {
+  async getMyBookings(userId: string, userType?: 'traveler' | 'guider') {
     const query: any = {};
     
-    if (role === 'tourist') {
+    if (userType === 'traveler') {
       query.touristId = userId;
-    } else if (role === 'guide') {
+    } else if (userType === 'guider') {
       query.guideId = userId;
     } else {
-      // If no role specified, return bookings where user is either tourist or guide
+      // If no userType specified, return bookings where user is either tourist or guide
       query.$or = [{ touristId: userId }, { guideId: userId }];
     }
 
     return this.bookingModel
       .find(query)
-      .populate('touristId', '-password')
-      .populate('guideId', '-password')
+      .populate('touristId', '-passwordHash')
+      .populate('guideId', '-passwordHash')
       .sort({ createdAt: -1 });
   }
 

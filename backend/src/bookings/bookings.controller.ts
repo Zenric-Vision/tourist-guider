@@ -20,8 +20,11 @@ export class BookingsController {
   @Get('my')
   @ApiOperation({ summary: 'Get user bookings' })
   @ApiResponse({ status: 200, description: 'Bookings retrieved successfully' })
-  async getMyBookings(@Request() req, @Query('role') role?: string) {
-    return this.bookingsService.getMyBookings(req.user._id, role);
+  async getMyBookings(
+    @Request() req, 
+    @Query('userType') userType?: 'traveler' | 'guider'
+  ) {
+    return this.bookingsService.getMyBookings(req.user._id, userType);
   }
 
   @Get(':id')
